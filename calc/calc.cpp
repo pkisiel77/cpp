@@ -1,9 +1,14 @@
 #include <iostream>
 #include <stdexcept>
 
-// correct the names
+
+int addition(int firstNumber, int secondNumber) {
+	std::cout << "INT ADD" << std::endl;
+	return firstNumber + secondNumber;
+}
 
 double addition(double firstNumber, double secondNumber) {
+	std::cout << "DOUBLE ADD" << std::endl;
 	return firstNumber + secondNumber;
 }
 
@@ -27,6 +32,7 @@ double division (double firstNumber, double secondNumber) {
 int main() {
 
 	double firstNumber, secondNumber, result;
+	int intFirstNumber, intSecondNumber, intResult;
 
 	std::cout << "Enter first number = " << std::endl;
 	std::cin >> firstNumber;
@@ -34,6 +40,15 @@ int main() {
 	std::cout << "Enter second number = " << std::endl;
 	std::cin >> secondNumber;
 
+	std::cout << "Enter INT first number = " << std::endl;
+	std::cin >> intFirstNumber;
+
+	std::cout << "Enter INT scond number = " << std::endl;
+	std::cin >> intSecondNumber;
+
+	result  = addition(intFirstNumber, intSecondNumber);
+	std::cout << "INT Addition = " << result << std::endl;	
+	
 	result = addition(firstNumber, secondNumber);
 	std::cout << "Addition = " << result << std::endl;
 
