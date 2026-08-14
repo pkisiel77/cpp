@@ -4,6 +4,14 @@
 #include <limits>
 #include <string>
 
+enum Operation {
+	Exit = 0,
+	Addition = 1,
+	Subtraction = 2,
+	Multiplication = 3,
+	Division = 4
+};
+
 double readNumber(const std::string &message) {
 	double number;
 
@@ -39,7 +47,7 @@ int readOperation() {
 			continue;
 		}
 
-		if(operation > 4 || operation < 0) {
+		if(operation > Division || operation < Exit) {
 			std::cout << "Unknown operation" << std::endl;
 			continue;
 		}
@@ -53,22 +61,22 @@ void executeOperation(int operation, double firstNumber, double secondNumber) {
 
 	try {
 		switch(operation) {
-			case 1:	
+			case Addition:	
 				result = addition(firstNumber, secondNumber);
 				std::cout << "Addition = " << result << std::endl;
 				break;
 
-			case 2:
+			case Subtraction:
 				result = subtraction(firstNumber, secondNumber);
 				std::cout << "Subtraction = " << result << std::endl;
 				break;
 
-			case 3:
+			case Multiplication:
 				result = multiplication(firstNumber, secondNumber);
 				std::cout << "Multiplication = " << result << std::endl;
 				break;
 
-			case 4:
+			case Division:
 				result  = division(firstNumber, secondNumber);
 				std::cout << "Division = " << result << std::endl;
 				break;
