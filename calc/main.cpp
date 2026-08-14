@@ -20,13 +20,11 @@ double readNumber(const std::string &message) {
 	}
 }
 
+int readOperation() {
+	int operation;
 
-int main() {
+	while(true) {
 
-	double firstNumber, secondNumber, result;
-	int operation = -1;
-
-	while (true) { 
 		std::cout << "Choose operation:" << std::endl;
 		std::cout << "1. Addition" << std::endl;
 		std::cout << "2. Subtraction" << std::endl;
@@ -38,13 +36,7 @@ int main() {
 			std::cout << "Invalid operation" << std::endl;
 			std::cin.clear();
 			std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-			//std::cout << "Operation = " << operation << std::endl;
 			continue;
-		}
-
-		if(operation == 0) {
-			std::cout << "Goodbye!" << std::endl;
-			break;
 		}
 
 		if(operation > 4 || operation < 0) {
@@ -52,38 +44,62 @@ int main() {
 			continue;
 		}
 
+		return operation;
+	}
+}
+
+void executeOperation(int operation, double firstNumber, double secondNumber) {
+	double result;
+
+	try {
+		switch(operation) {
+			case 1:	
+				result = addition(firstNumber, secondNumber);
+				std::cout << "Addition = " << result << std::endl;
+				break;
+
+			case 2:
+				result = subtraction(firstNumber, secondNumber);
+				std::cout << "Subtraction = " << result << std::endl;
+				break;
+
+			case 3:
+				result = multiplication(firstNumber, secondNumber);
+				std::cout << "Multiplication = " << result << std::endl;
+				break;
+
+			case 4:
+				result  = division(firstNumber, secondNumber);
+				std::cout << "Division = " << result << std::endl;
+				break;
+
+			default:
+				std::cout << "Unknown operation" << std::endl;
+				break;
+		}
+	} catch (const std::runtime_error &error) {
+		std::cout << "Error: " << error.what() << std::endl;
+	}
+}
+
+int main() {
+
+	double firstNumber, secondNumber, result;
+	int operation = -1;
+
+	while (true) { 
+
+		operation = readOperation();
+
+		if(operation == 0) {
+			std::cout << "Goodbye!" << std::endl;
+			break;
+		}
+
 		firstNumber = readNumber("Enter first number = ");
 		secondNumber = readNumber("Enter second number = ");
 
-		try {
-			switch(operation) {
-				case 1:	
-					result = addition(firstNumber, secondNumber);
-					std::cout << "Addition = " << result << std::endl;
-					break;
-
-				case 2:
-					result = subtraction(firstNumber, secondNumber);
-					std::cout << "Subtraction = " << result << std::endl;
-					break;
-
-				case 3:
-					result = multiplication(firstNumber, secondNumber);
-					std::cout << "Multiplication = " << result << std::endl;
-					break;
-
-				case 4:
-					result  = division(firstNumber, secondNumber);
-					std::cout << "Division = " << result << std::endl;
-					break;
-
-				default:
-					std::cout << "Unknown operation" << std::endl;
-					break;
-			}
-		} catch (const std::runtime_error &error) {
-			std::cout << "Error: " << error.what() << std::endl;
-		}
+		executeOperation(operation, firstNumber, secondNumber);
 	}
 
 	return 0;
