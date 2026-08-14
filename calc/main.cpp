@@ -4,7 +4,7 @@
 #include <limits>
 #include <string>
 
-enum Operation {
+enum class Operation {
 	Exit = 0,
 	Addition = 1,
 	Subtraction = 2,
@@ -28,8 +28,8 @@ double readNumber(const std::string &message) {
 	}
 }
 
-int readOperation() {
-	int operation;
+Operation readOperation() {
+	int operationInput;
 
 	while(true) {
 
@@ -40,43 +40,44 @@ int readOperation() {
 		std::cout << "4. Division" << std::endl;
 		std::cout << "0. Exit" << std::endl;
 
-		if(!(std::cin >> operation)) {
+		if(!(std::cin >> operationInput)) {
 			std::cout << "Invalid operation" << std::endl;
 			std::cin.clear();
 			std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 			continue;
 		}
 
-		if(operation > Division || operation < Exit) {
+		if(operationInput > static_cast<int>(Operation::Division) || 
+				operationInput < static_cast<int>(Operation::Exit)) {
 			std::cout << "Unknown operation" << std::endl;
 			continue;
 		}
 
-		return operation;
+		return static_cast<Operation>(operationInput);
 	}
 }
 
-void executeOperation(int operation, double firstNumber, double secondNumber) {
+void executeOperation(Operation operation, double firstNumber, double secondNumber) {
 	double result;
 
 	try {
 		switch(operation) {
-			case Addition:	
+			case Operation::Addition:	
 				result = addition(firstNumber, secondNumber);
 				std::cout << "Addition = " << result << std::endl;
 				break;
 
-			case Subtraction:
+			case Operation::Subtraction:
 				result = subtraction(firstNumber, secondNumber);
 				std::cout << "Subtraction = " << result << std::endl;
 				break;
 
-			case Multiplication:
+			case Operation::Multiplication:
 				result = multiplication(firstNumber, secondNumber);
 				std::cout << "Multiplication = " << result << std::endl;
 				break;
 
-			case Division:
+			case Operation::Division:
 				result  = division(firstNumber, secondNumber);
 				std::cout << "Division = " << result << std::endl;
 				break;
@@ -93,13 +94,13 @@ void executeOperation(int operation, double firstNumber, double secondNumber) {
 int main() {
 
 	double firstNumber, secondNumber, result;
-	int operation = -1;
+	Operation operation = Operation::Exit;
 
 	while (true) { 
 
 		operation = readOperation();
 
-		if(operation == 0) {
+		if(operation == Operation::Exit) {
 			std::cout << "Goodbye!" << std::endl;
 			break;
 		}
