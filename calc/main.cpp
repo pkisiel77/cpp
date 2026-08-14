@@ -1,13 +1,32 @@
 #include <iostream>
 #include <stdexcept>
 #include "calc.hpp"
+#include <limits>
+#include <string>
+
+double readNumber(const std::string &message) {
+	double number;
+
+	while(true) {
+		std::cout << message << std::endl;
+
+		if (std::cin >> number) {
+			return number;
+		}
+
+		std::cout << "Invalid number" << std::endl;
+		std::cin.clear();
+		std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+	}
+}
+
 
 int main() {
 
 	double firstNumber, secondNumber, result;
 	int operation = -1;
 
-	while (operation != 0) {
+	while (true) { 
 		std::cout << "Choose operation:" << std::endl;
 		std::cout << "1. Addition" << std::endl;
 		std::cout << "2. Subtraction" << std::endl;
@@ -15,7 +34,13 @@ int main() {
 		std::cout << "4. Division" << std::endl;
 		std::cout << "0. Exit" << std::endl;
 
-		std::cin >> operation;
+		if(!(std::cin >> operation)) {
+			std::cout << "Invalid operation" << std::endl;
+			std::cin.clear();
+			std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+			//std::cout << "Operation = " << operation << std::endl;
+			continue;
+		}
 
 		if(operation == 0) {
 			std::cout << "Goodbye!" << std::endl;
@@ -27,10 +52,8 @@ int main() {
 			continue;
 		}
 
-		std::cout << "Enter first number = " << std::endl;
-		std::cin >> firstNumber;
-		std::cout << "Enter second number = " << std::endl;
-		std::cin >> secondNumber;
+		firstNumber = readNumber("Enter first number = ");
+		secondNumber = readNumber("Enter second number = ");
 
 		try {
 			switch(operation) {
