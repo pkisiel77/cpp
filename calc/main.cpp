@@ -9,7 +9,9 @@ enum class Operation {
 	Addition = 1,
 	Subtraction = 2,
 	Multiplication = 3,
-	Division = 4
+	Division = 4,
+	Power = 5,
+	Power2 = 6
 };
 
 double readNumber(const std::string &message) {
@@ -38,6 +40,8 @@ Operation readOperation() {
 		std::cout << "2. Subtraction" << std::endl;
 		std::cout << "3. Multiplication" << std::endl;
 		std::cout << "4. Division" << std::endl;
+		std::cout << "5. Power" << std::endl;
+		std::cout << "6. Power^2" << std::endl;
 		std::cout << "0. Exit" << std::endl;
 
 		if(!(std::cin >> operationInput)) {
@@ -47,7 +51,7 @@ Operation readOperation() {
 			continue;
 		}
 
-		if(operationInput > static_cast<int>(Operation::Division) || 
+		if(operationInput > static_cast<int>(Operation::Power2) || 
 				operationInput < static_cast<int>(Operation::Exit)) {
 			std::cout << "Unknown operation" << std::endl;
 			continue;
@@ -82,6 +86,16 @@ void executeOperation(Operation operation, double firstNumber, double secondNumb
 				std::cout << "Division = " << result << std::endl;
 				break;
 
+			case Operation::Power:
+				result = power(firstNumber, secondNumber);
+				std::cout << "Power = " << result << std::endl;
+				break;
+
+			case Operation::Power2:
+				result = power(firstNumber);
+				std::cout << "Power^2 = " << result << std::endl;
+				break;
+
 			default:
 				std::cout << "Unknown operation" << std::endl;
 				break;
@@ -106,7 +120,10 @@ int main() {
 		}
 
 		firstNumber = readNumber("Enter first number = ");
-		secondNumber = readNumber("Enter second number = ");
+		
+		if(operation != Operation::Power2) {
+			secondNumber = readNumber("Enter second number = ");
+		}
 
 		executeOperation(operation, firstNumber, secondNumber);
 	}

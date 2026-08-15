@@ -1,7 +1,7 @@
 #include "calc.hpp"
 #include <iostream>
 #include <stdexcept>
-
+#include <cmath>
 
 int addition(int firstNumber, int secondNumber) {
 	std::cout << "INT ADD" << std::endl;
@@ -27,5 +27,9 @@ double division (double firstNumber, double secondNumber) {
 	}
 
 	return firstNumber / secondNumber;
+}
+
+double power(double firstNumber, double secondNumber) {
+	return std::pow(firstNumber, secondNumber);
 }
 
