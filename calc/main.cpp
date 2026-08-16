@@ -107,7 +107,7 @@ void executeOperation(Operation operation, double firstNumber, double secondNumb
 
 int main() {
 
-	double firstNumber, secondNumber, result;
+	double firstNumber, secondNumber;
 	Operation operation = Operation::Exit;
 
 	while (true) { 
