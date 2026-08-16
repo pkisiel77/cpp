@@ -3,6 +3,7 @@
 #include "calc.hpp"
 #include <limits>
 #include <string>
+#include <utility>
 
 enum class Operation {
 	Exit = 0,
@@ -51,8 +52,8 @@ Operation readOperation() {
 			continue;
 		}
 
-		if(operationInput > static_cast<int>(Operation::Power2) || 
-				operationInput < static_cast<int>(Operation::Exit)) {
+		if(std::cmp_greater(operationInput, static_cast<int>(Operation::Power2)) || 
+				std::cmp_less(operationInput, static_cast<int>(Operation::Exit))) {
 			std::cout << "Unknown operation" << std::endl;
 			continue;
 		}
@@ -120,7 +121,7 @@ int main() {
 		}
 
 		firstNumber = readNumber("Enter first number = ");
-		
+
 		if(operation != Operation::Power2) {
 			secondNumber = readNumber("Enter second number = ");
 		}
