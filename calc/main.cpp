@@ -171,10 +171,27 @@ void saveHistory(const std::vector<std::string> &history, const std::string &fil
 	std::cout << "History saved to " << fileName << std::endl;
 }
 
+std::vector<std::string> loadHistory(const std::string &fileName) {
+	std::vector<std::string> history;
+	std::ifstream file(fileName);
+
+	if(!file) {
+		return history;
+	}
+
+	std::string entry;
+
+	while(std::getline(file, entry)) {
+		history.push_back(entry);
+	}
+
+	return history;
+}
+
 int main() {
 	double firstNumber, secondNumber;
 	Operation operation = Operation::Exit;
-	std::vector<std::string> history;
+	std::vector<std::string> history = loadHistory("history.txt");
 
 	while (true) { 
 
