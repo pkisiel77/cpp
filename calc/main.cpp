@@ -4,6 +4,8 @@
 #include <limits>
 #include <string>
 #include <utility>
+#include <vector>
+
 
 enum class Operation {
 	Exit = 0,
@@ -12,7 +14,8 @@ enum class Operation {
 	Multiplication = 3,
 	Division = 4,
 	Power = 5,
-	Power2 = 6
+	Power2 = 6,
+	History = 7
 };
 
 double readNumber(const std::string &message) {
@@ -43,6 +46,7 @@ Operation readOperation() {
 		std::cout << "4. Division" << std::endl;
 		std::cout << "5. Power" << std::endl;
 		std::cout << "6. Power^2" << std::endl;
+		std::cout << "7. History" << std::endl;
 		std::cout << "0. Exit" << std::endl;
 
 		if(!(std::cin >> operationInput)) {
@@ -52,7 +56,7 @@ Operation readOperation() {
 			continue;
 		}
 
-		if(std::cmp_greater(operationInput, static_cast<int>(Operation::Power2)) || 
+		if(std::cmp_greater(operationInput, static_cast<int>(Operation::History)) || 
 				std::cmp_less(operationInput, static_cast<int>(Operation::Exit))) {
 			std::cout << "Unknown operation" << std::endl;
 			continue;
@@ -68,12 +72,20 @@ std::string operationName(Operation operation);
 double calculateResult(Operation operation, double firstNumber, double secondNumber);
 
 
-void executeOperation(Operation operation, double firstNumber, double secondNumber) {
+std::string executeOperation(Operation operation, double firstNumber, double secondNumber) {
 	try {
 		double result = calculateResult(operation, firstNumber, secondNumber);
-		std::cout << operationName(operation) << " = " << result << std::endl;
+		std::string entry = operationName(operation) + " = " + std::to_string(result);
+
+		std::cout << entry << std::endl;
+
+		return entry;
 	} catch (const std::runtime_error &error) {
-		std::cout << "Error: " << error.what() << std::endl;
+		std::string entry = std::string("Error: ") + error.what();
+
+		std::cout << entry << std::endl;
+
+		return entry;
 	}
 }
 
@@ -91,10 +103,23 @@ std::string operationName(Operation operation) {
 			return "Power";
 		case Operation::Power2:
 			return "Power^2";
+		case Operation::History:
+			return "History";
 		case Operation::Exit:
 			return "Exit";
 		default:
 			return "Unknown";
+	}
+}
+
+void showHistory(const std::vector<std::string> &history) {
+	if(history.empty()) {
+		std::cout << "History is empty" << std::endl;
+		return;
+	}
+
+	for(const std::string &entry : history) {
+		std::cout << entry << std::endl;
 	}
 }
 
@@ -119,13 +144,19 @@ double calculateResult(Operation operation, double firstNumber, double secondNum
 }
 
 int main() {
-
 	double firstNumber, secondNumber;
 	Operation operation = Operation::Exit;
+	std::vector<std::string> history;
 
 	while (true) { 
 
 		operation = readOperation();
+
+
+		if(operation == Operation::History) {
+			showHistory(history);
+			continue;
+		}
 
 		if(operation == Operation::Exit) {
 			std::cout << "Goodbye!" << std::endl;
@@ -138,7 +169,8 @@ int main() {
 			secondNumber = readNumber("Enter second number = ");
 		}
 
-		executeOperation(operation, firstNumber, secondNumber);
+		std::string historyEntry = executeOperation(operation, firstNumber, secondNumber);
+		history.push_back(historyEntry);
 	}
 
 	return 0;
