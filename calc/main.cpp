@@ -5,7 +5,8 @@
 #include <string>
 #include <utility>
 #include <vector>
-
+#include <sstream>
+#include <iomanip>
 
 enum class Operation {
 	Exit = 0,
@@ -71,11 +72,12 @@ std::string operationName(Operation operation);
 
 double calculateResult(Operation operation, double firstNumber, double secondNumber);
 
+std::string formatResult(double result);
 
 std::string executeOperation(Operation operation, double firstNumber, double secondNumber) {
 	try {
 		double result = calculateResult(operation, firstNumber, secondNumber);
-		std::string entry = operationName(operation) + " = " + std::to_string(result);
+		std::string entry = operationName(operation) + " = " + formatResult(result);
 
 		std::cout << entry << std::endl;
 
@@ -141,6 +143,12 @@ double calculateResult(Operation operation, double firstNumber, double secondNum
 		default:
 			throw std::runtime_error("Unknown operation");
 	}
+}
+
+std::string formatResult(double result) {
+	std::ostringstream stream;
+	stream << std::fixed << std::setprecision(2) << result;
+	return stream.str();
 }
 
 int main() {
