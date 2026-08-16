@@ -7,6 +7,7 @@
 #include <vector>
 #include <sstream>
 #include <iomanip>
+#include <fstream>
 
 enum class Operation {
 	Exit = 0,
@@ -16,7 +17,8 @@ enum class Operation {
 	Division = 4,
 	Power = 5,
 	Power2 = 6,
-	History = 7
+	History = 7,
+	SaveHistory = 8
 };
 
 double readNumber(const std::string &message) {
@@ -48,6 +50,7 @@ Operation readOperation() {
 		std::cout << "5. Power" << std::endl;
 		std::cout << "6. Power^2" << std::endl;
 		std::cout << "7. History" << std::endl;
+		std::cout << "8. Save history" << std::endl;
 		std::cout << "0. Exit" << std::endl;
 
 		if(!(std::cin >> operationInput)) {
@@ -57,7 +60,7 @@ Operation readOperation() {
 			continue;
 		}
 
-		if(std::cmp_greater(operationInput, static_cast<int>(Operation::History)) || 
+		if(std::cmp_greater(operationInput, static_cast<int>(Operation::SaveHistory)) || 
 				std::cmp_less(operationInput, static_cast<int>(Operation::Exit))) {
 			std::cout << "Unknown operation" << std::endl;
 			continue;
@@ -107,6 +110,8 @@ std::string operationName(Operation operation) {
 			return "Power^2";
 		case Operation::History:
 			return "History";
+		case Operation::SaveHistory:
+			return "Save history";
 		case Operation::Exit:
 			return "Exit";
 		default:
@@ -151,6 +156,21 @@ std::string formatResult(double result) {
 	return stream.str();
 }
 
+void saveHistory(const std::vector<std::string> &history, const std::string &fileName) {
+	std::ofstream file(fileName);
+
+	if(!file) {
+		std::cout << "Cannot open file" << std::endl;
+		return;
+	}
+
+	for(const std::string &entry : history) {
+		file << entry << std::endl;
+	}
+
+	std::cout << "History saved to " << fileName << std::endl;
+}
+
 int main() {
 	double firstNumber, secondNumber;
 	Operation operation = Operation::Exit;
@@ -160,9 +180,13 @@ int main() {
 
 		operation = readOperation();
 
-
 		if(operation == Operation::History) {
 			showHistory(history);
+			continue;
+		}
+
+		if(operation == Operation::SaveHistory) {
+			saveHistory(history, "history.txt");
 			continue;
 		}
 
