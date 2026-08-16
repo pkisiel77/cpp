@@ -62,47 +62,59 @@ Operation readOperation() {
 	}
 }
 
+
+std::string operationName(Operation operation);
+
+double calculateResult(Operation operation, double firstNumber, double secondNumber);
+
+
 void executeOperation(Operation operation, double firstNumber, double secondNumber) {
-	double result;
-
 	try {
-		switch(operation) {
-			case Operation::Addition:	
-				result = addition(firstNumber, secondNumber);
-				std::cout << "Addition = " << result << std::endl;
-				break;
-
-			case Operation::Subtraction:
-				result = subtraction(firstNumber, secondNumber);
-				std::cout << "Subtraction = " << result << std::endl;
-				break;
-
-			case Operation::Multiplication:
-				result = multiplication(firstNumber, secondNumber);
-				std::cout << "Multiplication = " << result << std::endl;
-				break;
-
-			case Operation::Division:
-				result  = division(firstNumber, secondNumber);
-				std::cout << "Division = " << result << std::endl;
-				break;
-
-			case Operation::Power:
-				result = power(firstNumber, secondNumber);
-				std::cout << "Power = " << result << std::endl;
-				break;
-
-			case Operation::Power2:
-				result = power(firstNumber);
-				std::cout << "Power^2 = " << result << std::endl;
-				break;
-
-			default:
-				std::cout << "Unknown operation" << std::endl;
-				break;
-		}
+		double result = calculateResult(operation, firstNumber, secondNumber);
+		std::cout << operationName(operation) << " = " << result << std::endl;
 	} catch (const std::runtime_error &error) {
 		std::cout << "Error: " << error.what() << std::endl;
+	}
+}
+
+std::string operationName(Operation operation) {
+	switch(operation) {
+		case Operation::Addition:
+			return "Addition";
+		case Operation::Subtraction:
+			return "Subtraction";
+		case Operation::Multiplication:
+			return "Multiplication";
+		case Operation::Division:
+			return "Division";
+		case Operation::Power:
+			return "Power";
+		case Operation::Power2:
+			return "Power^2";
+		case Operation::Exit:
+			return "Exit";
+		default:
+			return "Unknown";
+	}
+}
+
+double calculateResult(Operation operation, double firstNumber, double secondNumber) {
+	switch(operation) {
+		case Operation::Addition:
+			return addition(firstNumber, secondNumber);
+		case Operation::Subtraction:
+			return subtraction(firstNumber, secondNumber);
+		case Operation::Multiplication:
+			return multiplication(firstNumber, secondNumber);
+		case Operation::Division:
+			return division(firstNumber, secondNumber);
+		case Operation::Power:
+			return power(firstNumber, secondNumber);
+		case Operation::Power2:
+			return power(firstNumber);
+
+		default:
+			throw std::runtime_error("Unknown operation");
 	}
 }
 
@@ -131,4 +143,3 @@ int main() {
 
 	return 0;
 }
-
