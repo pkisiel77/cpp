@@ -10,6 +10,7 @@ int main() {
 	double firstNumber, secondNumber;
 	Operation operation = Operation::Exit;
 	std::vector<std::string> history = loadHistory("history.txt");
+	bool historyChanged = false;
 
 	while (true) { 
 
@@ -22,10 +23,14 @@ int main() {
 
 		if(operation == Operation::SaveHistory) {
 			saveHistory(history, "history.txt");
+			historyChanged = false;
 			continue;
 		}
 
 		if(operation == Operation::Exit) {
+			if(historyChanged) {
+				saveHistory(history, "history.txt");
+			}
 			std::cout << "Goodbye!" << std::endl;
 			break;
 		}
@@ -38,6 +43,7 @@ int main() {
 
 		std::string historyEntry = executeOperation(operation, firstNumber, secondNumber);
 		history.push_back(historyEntry);
+		historyChanged = true;
 	}
 
 	return 0;
