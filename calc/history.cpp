@@ -61,3 +61,15 @@ void clearHistory(std::vector<std::string> &history, const std::string &fileName
 	std::cout << "History cleared" << std::endl;
 }
 
+
+void appendHistoryEntry(const std::string &entry, const std::string &fileName) {
+	std::ofstream file(fileName, std::ios::app);
+
+	if(!file) {
+		std::cout << "Cannot open history file" << std::endl;
+		return;
+	}
+
+	file << entry << std::endl;
+}
+

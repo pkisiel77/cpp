@@ -53,7 +53,8 @@ int main() {
 
 		std::string historyEntry = executeOperation(operation, firstNumber, secondNumber);
 		history.push_back(historyEntry);
-		historyChanged = true;
+		appendHistoryEntry(historyEntry, historyFileName);
+		historyChanged = false;
 	}
 
 	return 0;
