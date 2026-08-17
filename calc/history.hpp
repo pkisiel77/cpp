@@ -7,5 +7,6 @@
 void showHistory(const std::vector<std::string> &history);
 void saveHistory(const std::vector<std::string> &history, const std::string &fileName);
 std::vector<std::string> loadHistory(const std::string &fileName);
+void clearHistory(std::vector<std::string> &history, const std::string &fileName);
 
 #endif

@@ -35,6 +35,7 @@ Operation readOperation() {
 		std::cout << "6. Power^2" << std::endl;
 		std::cout << "7. History" << std::endl;
 		std::cout << "8. Save history" << std::endl;
+		std::cout << "9. Clear history" << std::endl;
 		std::cout << "0. Exit" << std::endl;
 
 		if(!(std::cin >> operationInput)) {
@@ -44,7 +45,7 @@ Operation readOperation() {
 			continue;
 		}
 
-		if(std::cmp_greater(operationInput, static_cast<int>(Operation::SaveHistory)) || 
+		if(std::cmp_greater(operationInput, static_cast<int>(Operation::ClearHistory)) || 
 				std::cmp_less(operationInput, static_cast<int>(Operation::Exit))) {
 			std::cout << "Unknown operation" << std::endl;
 			continue;
@@ -52,4 +53,13 @@ Operation readOperation() {
 
 		return static_cast<Operation>(operationInput);
 	}
+}
+
+bool confirmAction(const std::string &message) {
+	char answer;
+
+	std::cout << message << " (y/n) " << std::endl;
+	std::cin >> answer;
+
+	return answer == 'y' || answer == 'Y';
 }

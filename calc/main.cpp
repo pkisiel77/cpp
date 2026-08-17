@@ -7,9 +7,11 @@
 #include "operations.hpp"
 
 int main() {
+
+	const std::string historyFileName = "history.txt";
 	double firstNumber, secondNumber;
 	Operation operation = Operation::Exit;
-	std::vector<std::string> history = loadHistory("history.txt");
+	std::vector<std::string> history = loadHistory(historyFileName);
 	bool historyChanged = false;
 
 	while (true) { 
@@ -22,14 +24,22 @@ int main() {
 		}
 
 		if(operation == Operation::SaveHistory) {
-			saveHistory(history, "history.txt");
+			saveHistory(history, historyFileName);
 			historyChanged = false;
+			continue;
+		}
+
+		if(operation == Operation::ClearHistory) {
+			if(confirmAction("Clear history?")) {
+				clearHistory(history, historyFileName);
+				historyChanged = false;
+			}
 			continue;
 		}
 
 		if(operation == Operation::Exit) {
 			if(historyChanged) {
-				saveHistory(history, "history.txt");
+				saveHistory(history, historyFileName);
 			}
 			std::cout << "Goodbye!" << std::endl;
 			break;

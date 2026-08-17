@@ -7,5 +7,6 @@
 
 double readNumber(const std::string &message);
 Operation readOperation();
+bool confirmAction(const std::string &message);
 
 #endif

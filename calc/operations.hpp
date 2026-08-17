@@ -12,7 +12,8 @@ enum class Operation {
 	Power = 5,
 	Power2 = 6,
 	History = 7,
-	SaveHistory = 8
+	SaveHistory = 8,
+	ClearHistory = 9
 };
 
 std::string operationName(Operation operation);

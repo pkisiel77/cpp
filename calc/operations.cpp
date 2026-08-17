@@ -25,6 +25,8 @@ std::string operationName(Operation operation) {
 			return "History";
 		case Operation::SaveHistory:
 			return "Save history";
+		case Operation::ClearHistory:
+			return "Clear history";
 		case Operation::Exit:
 			return "Exit";
 		default:

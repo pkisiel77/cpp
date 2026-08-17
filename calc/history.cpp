@@ -46,3 +46,18 @@ std::vector<std::string> loadHistory(const std::string &fileName) {
 
 	return history;
 }
+
+
+void clearHistory(std::vector<std::string> &history, const std::string &fileName) {
+	history.clear();
+
+	std::ofstream file(fileName, std::ios::trunc);
+
+	if(!file) {
+		std::cout << "Cannot clear history file" << std::endl;
+		return;
+	}
+
+	std::cout << "History cleared" << std::endl;
+}
+
