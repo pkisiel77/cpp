@@ -10,4 +10,7 @@ std::vector<std::string> loadHistory(const std::string &fileName);
 void clearHistory(std::vector<std::string> &history, const std::string &fileName);
 void appendHistoryEntry(const std::string &entry, const std::string &fileName);
 
+std::string currentTimestamp();
+std::string withTimestamp(const std::string &entry);
+
 #endif

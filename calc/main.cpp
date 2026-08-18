@@ -51,7 +51,7 @@ int main() {
 			secondNumber = readNumber("Enter second number = ");
 		}
 
-		std::string historyEntry = executeOperation(operation, firstNumber, secondNumber);
+		std::string historyEntry = withTimestamp(executeOperation(operation, firstNumber, secondNumber));
 		history.push_back(historyEntry);
 		appendHistoryEntry(historyEntry, historyFileName);
 		historyChanged = false;

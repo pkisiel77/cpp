@@ -1,6 +1,10 @@
 #include "history.hpp"
 
 #include <iostream>
+#include <sstream>
+#include <iomanip>
+#include <chrono>
+#include <ctime>
 #include <fstream>
 
 void showHistory(const std::vector<std::string> &history) {
@@ -73,3 +77,16 @@ void appendHistoryEntry(const std::string &entry, const std::string &fileName) {
 	file << entry << std::endl;
 }
 
+std::string currentTimestamp() {
+	const auto now = std::chrono::system_clock::now();
+	const std::time_t currentTime = std::chrono::system_clock::to_time_t(now);
+
+	std::ostringstream stream;
+	stream << std::put_time(std::localtime(&currentTime), "%Y-%m-%d %H:%M:%S");
+
+	return stream.str();
+}
+
+std::string withTimestamp(const std::string &entry) {
+	return "[" + currentTimestamp() + "] " + entry;
+}
