@@ -6,11 +6,19 @@
 #include "input.hpp"
 #include "operations.hpp"
 
-int main() {
+int main(int argc, char *argv[]) {
 
-	const std::string historyFileName = "history.txt";
+	std::string historyFileName = "history.txt";
+
 	double firstNumber, secondNumber;
 	Operation operation = Operation::Exit;
+
+	if (argc > 1) {
+		historyFileName = argv[1];
+	}
+
+	std::cout << "History file name is " << historyFileName << std::endl;
+
 	std::vector<std::string> history = loadHistory(historyFileName);
 	bool historyChanged = false;
 

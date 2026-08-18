@@ -6,4 +6,4 @@ build/
 cmake-build-*/
 .DS_Store
 calc/calc
-calc/history.txt
+calc/*history*.txt

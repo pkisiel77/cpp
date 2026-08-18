@@ -8,7 +8,7 @@ all:
 	$(CXX) $(CXXFLAGS) $(SOURCES) -o $(TARGET)
 
 run: all
-	./$(TARGET)
+	./$(TARGET) $(ARGS)
 
 clean:
 	rm -f $(TARGET)
