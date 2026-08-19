@@ -20,18 +20,14 @@ int main(int argc, char *argv[]) {
 		return 1;
 	}
 
-	std::string historyFileName = "history.txt";
+	AppConfig config = parseArguments(argc, argv);
 
 	double firstNumber, secondNumber;
 	Operation operation = Operation::Exit;
 
-	if (argc > 1) {
-		historyFileName = argv[1];
-	}
+	std::cout << "History file name is " << config.historyFileName << std::endl;
 
-	std::cout << "History file name is " << historyFileName << std::endl;
-
-	std::vector<std::string> history = loadHistory(historyFileName);
+	std::vector<std::string> history = loadHistory(config.historyFileName);
 	bool historyChanged = false;
 
 	while (true) { 
@@ -44,14 +40,14 @@ int main(int argc, char *argv[]) {
 		}
 
 		if(operation == Operation::SaveHistory) {
-			saveHistory(history, historyFileName);
+			saveHistory(history, config.historyFileName);
 			historyChanged = false;
 			continue;
 		}
 
 		if(operation == Operation::ClearHistory) {
 			if(confirmAction("Clear history?")) {
-				clearHistory(history, historyFileName);
+				clearHistory(history, config.historyFileName);
 				historyChanged = false;
 			}
 			continue;
@@ -59,7 +55,7 @@ int main(int argc, char *argv[]) {
 
 		if(operation == Operation::Exit) {
 			if(historyChanged) {
-				saveHistory(history, historyFileName);
+				saveHistory(history, config.historyFileName);
 			}
 			std::cout << "Goodbye!" << std::endl;
 			break;
@@ -73,7 +69,7 @@ int main(int argc, char *argv[]) {
 
 		std::string historyEntry = withTimestamp(executeOperation(operation, firstNumber, secondNumber));
 		history.push_back(historyEntry);
-		appendHistoryEntry(historyEntry, historyFileName);
+		appendHistoryEntry(historyEntry, config.historyFileName);
 		historyChanged = false;
 	}
 

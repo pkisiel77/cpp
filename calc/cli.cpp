@@ -2,7 +2,6 @@
 
 #include <iostream>
 
-
 void printHelp(const std::string &programName) {
 	std::cout << "Usage: " << std::endl;
 	std::cout << " " << programName << " [history-file] " << std::endl;
@@ -23,4 +22,15 @@ bool isHelpOption(const std::string &argument) {
 bool hasTooManyArguments(int argc) {
 	return argc > 2;
 }
+
+AppConfig parseArguments(int argc, char *argv[]) {
+	AppConfig config;
+
+	if(argc > 1) {
+		config.historyFileName = argv[1];
+	}
+
+	return config;
+}
+
 
