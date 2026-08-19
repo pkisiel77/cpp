@@ -6,23 +6,18 @@
 #include "input.hpp"
 #include "operations.hpp"
 
-
-void printHelp(const std::string &programName) {
-	std::cout << "Usage: " << std::endl;
-	std::cout << " " << programName << " [history-file] " << std::endl;
-	std::cout << std::endl;
-	std::cout << "Options:" << std::endl;
-	std::cout << " --help    Show help" << std::endl;
-	std::cout << std::endl;
-	std::cout << "Examples:" << std::endl;
-	std::cout << " " << programName << std::endl;
-	std::cout << " " << programName << " my-history.txt" << std::endl;
-}
+#include "cli.hpp"
 
 int main(int argc, char *argv[]) {
-	if(argc > 1 && std::string(argv[1]) == "--help") {
+	if(argc > 1 && isHelpOption(argv[1])) {
 		printHelp(argv[0]);
 		return 0;
+	}
+
+	if(hasTooManyArguments(argc)) {
+		std::cout << "Too many arguments" << std::endl;
+		printHelp(argv[0]);
+		return 1;
 	}
 
 	std::string historyFileName = "history.txt";
