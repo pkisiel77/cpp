@@ -5,6 +5,38 @@ std::string selectedActionMessage(const char *menuItem) {
 	return std::string("Selected: ") + menuItem;
 }
 
+void drawLayout() {
+	clear();
+	box(stdscr, 0,0);
+
+	mvprintw(1, 2, "C++ Calculator ncurses");
+	mvprintw(2, 2, "Use arrows and Enter. Press q to quit.");
+}
+
+void drawMenu(const char *menuItems[], int menuSize, int selected) {
+	for(int i=0; i<menuSize; i++) {
+		if(i==selected) {
+			attron(A_REVERSE);
+		}
+
+		mvprintw(4 + i, 4, "%s", menuItems[i]);
+
+		if(i == selected) {
+			attroff(A_REVERSE);
+		}
+	}
+}
+
+void drawStatus(const std::string &statusMessage) {
+	mvprintw(LINES - 4, 2, "Status: %s", statusMessage.c_str());
+	mvprintw(LINES - 3, 2, "Screen size: %d x %d", COLS, LINES);
+	mvprintw(LINES - 2, 2, "Press q to quit");
+}
+
+bool isTerminalTooSmall() {
+	return LINES < 12;
+}
+
 int main() {
 	initscr();
 	noecho();
@@ -26,10 +58,7 @@ int main() {
 	std::string statusMessage = "Select operation";
 
 	while(true) {
-		clear();
-		box(stdscr, 0,0);
-
-		if(LINES < 12) {
+		if(isTerminalTooSmall()) {
 			clear();
 			mvprintw(1, 2, "Terminal too small");
 			refresh();
@@ -37,25 +66,9 @@ int main() {
 			break;
 		}
 
-		mvprintw(1, 2, "C++ Calculator ncurses");
-		mvprintw(2, 2, "Use arrows and Enter. Press q to quit.");
-
-		for(int i=0; i<menuSize; i++) {
-			if(i==selected) {
-				attron(A_REVERSE);
-			}
-
-			mvprintw(4 + i, 4, "%s", menuItems[i]);
-
-			if(i == selected) {
-				attroff(A_REVERSE);
-			}
-		}
-
-
-		mvprintw(LINES - 4, 2, "Status: %s", statusMessage.c_str());
-		mvprintw(LINES - 3, 2, "Screen size: %d x %d", COLS, LINES);
-		mvprintw(LINES - 2, 2, "Press q to quit");
+		drawLayout();
+		drawMenu(menuItems, menuSize, selected);
+		drawStatus(statusMessage);
 
 		refresh();
 
