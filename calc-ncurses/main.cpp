@@ -4,24 +4,74 @@ int main() {
 	initscr();
 	noecho();
 	cbreak();
+	keypad(stdscr, TRUE);
 
-	clear();
+	const char *menuItems[] = {
+		"Addition",
+		"Subtraction",
+		"Multiplication",
+		"Division",
+		"Exit"
+	};
 
-	box(stdscr, 0, 0);
+	const int menuSize = 5;
+	int selected = 0;
+	int key;
 
-	mvprintw(1, 2, "C++ Calculator ncurses");
-	mvprintw(3, 2, "1. Addition");
-	mvprintw(4, 2, "2. Subtraction");
-	mvprintw(5, 2, "3. Multiplication");
-	mvprintw(6, 2, "4. Division");
-	mvprintw(8, 2, "Press any key to exit");
+	while(true) {
+		clear();
+		box(stdscr, 0,0);
 
+		mvprintw(1, 2, "C++ Calculator ncurses");
+		mvprintw(2, 2, "Use arrows and Enter. Press q to quit.");
+
+		for(int i=0; i<menuSize; i++) {
+			if(i==selected) {
+				attron(A_REVERSE);
+			}
+
+			mvprintw(4 + i, 4, "%s", menuItems[i]);
+
+			if(i == selected) {
+				attroff(A_REVERSE);
+			}
+		}
+
+		refresh();
+
+		key = getch();
+
+		if(key == 'q') {
+			break;
+		}
+
+		if(key == KEY_UP) {
+			selected--;
+
+			if(selected < 0) {
+				selected = menuSize - 1;
+			}
+		}
+
+		if(key == KEY_DOWN) {
+			selected++;
+
+			if(selected >= menuSize) {
+				selected = 0;
+			}
+		}
+
+		if(key == '\n') {
+			if(selected == menuSize - 1) {
+				break;
+			}
+		}
+	}
+	
 	mvprintw(LINES - 2, 2, "Screen size: %d x %d", COLS, LINES);
-	
-	refresh();
-	getch();
-	
+
 	endwin();
 
 	return 0;
 }
+
