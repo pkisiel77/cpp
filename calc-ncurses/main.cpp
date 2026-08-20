@@ -1,4 +1,9 @@
 #include <ncurses.h>
+#include <string>
+
+std::string selectedActionMessage(const char *menuItem) {
+	return std::string("Selected: ") + menuItem;
+}
 
 int main() {
 	initscr();
@@ -18,9 +23,19 @@ int main() {
 	int selected = 0;
 	int key;
 
+	std::string statusMessage = "Select operation";
+
 	while(true) {
 		clear();
 		box(stdscr, 0,0);
+
+		if(LINES < 12) {
+			clear();
+			mvprintw(1, 2, "Terminal too small");
+			refresh();
+			getch();
+			break;
+		}
 
 		mvprintw(1, 2, "C++ Calculator ncurses");
 		mvprintw(2, 2, "Use arrows and Enter. Press q to quit.");
@@ -36,6 +51,11 @@ int main() {
 				attroff(A_REVERSE);
 			}
 		}
+
+
+		mvprintw(LINES - 4, 2, "Status: %s", statusMessage.c_str());
+		mvprintw(LINES - 3, 2, "Screen size: %d x %d", COLS, LINES);
+		mvprintw(LINES - 2, 2, "Press q to quit");
 
 		refresh();
 
@@ -65,10 +85,10 @@ int main() {
 			if(selected == menuSize - 1) {
 				break;
 			}
+
+			statusMessage = selectedActionMessage(menuItems[selected]); 
 		}
 	}
-	
-	mvprintw(LINES - 2, 2, "Screen size: %d x %d", COLS, LINES);
 
 	endwin();
 
