@@ -37,11 +37,31 @@ bool isTerminalTooSmall() {
 	return LINES < 12;
 }
 
+std::string readTextInput(const std::string &prompt) {
+	char buffer[100];
+
+	echo();
+	curs_set(1);
+
+	clear();
+	box(stdscr, 0, 0);
+
+	mvprintw(1, 2, "%s", prompt.c_str());
+	mvgetnstr(3, 2, buffer, 99);
+
+	noecho();
+	curs_set(0);
+
+	return std::string(buffer);
+}
+
+
 int main() {
 	initscr();
 	noecho();
 	cbreak();
 	keypad(stdscr, TRUE);
+	curs_set(0);
 
 	const char *menuItems[] = {
 		"Addition",
@@ -99,7 +119,10 @@ int main() {
 				break;
 			}
 
-			statusMessage = selectedActionMessage(menuItems[selected]); 
+			// statusMessage = selectedActionMessage(menuItems[selected]);
+
+			std::string input = readTextInput("Enter first number:");
+			statusMessage = std::string("First number: ") + input;
 		}
 	}
 
