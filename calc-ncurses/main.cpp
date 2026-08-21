@@ -2,6 +2,66 @@
 #include <string>
 #include <stdexcept>
 
+const int headerHeight = 3;
+const int footerHeight = 3;
+const int menuWidth = 24;
+
+void drawHeader(WINDOW *window) {
+	werase(window);
+	box(window, 0, 0);
+	mvwprintw(window, 1, 2, "C++ Calculator ncurses");
+	wrefresh(window);
+}
+
+void drawFooter(WINDOW *window) {
+	werase(window);
+	box(window, 0, 0);
+	mvwprintw(window, 1, 2, "Arrows: move | Enter: select | q: quit");
+	wrefresh(window);
+}
+
+void drawMenu(WINDOW *window, const char *menuItems[], int menuSize, int selected) {
+	werase(window);
+	box(window, 0, 0);
+	mvwprintw(window, 1, 2, "Menu");
+
+	for(int i = 0; i < menuSize; i++) {
+		if(i == selected) {
+			wattron(window, COLOR_PAIR(2));
+		}
+
+		mvwprintw(window, 3 + i, 2, "%s", menuItems[i]);
+
+		if(i == selected) {
+			wattroff(window, COLOR_PAIR(2));
+		}
+	}
+
+	wrefresh(window);
+}
+
+void drawContent(WINDOW *window, const std::string &statusMessage, bool isError) {
+	werase(window);
+	box(window, 0, 0);
+	mvwprintw(window, 1, 2, "Result / Status");
+
+	if(isError) {
+		wattron(window, COLOR_PAIR(4));
+	} else {
+		wattron(window, COLOR_PAIR(3));
+	}
+
+	mvwprintw(window, 3, 2, "Status: %s", statusMessage.c_str());
+
+	if(isError) {
+		wattroff(window, COLOR_PAIR(4));
+	} else {
+		wattroff(window, COLOR_PAIR(3));
+	}
+
+	wrefresh(window);
+}
+
 double parseNumber(const std::string &text) {
 	return std::stod(text);
 }
@@ -30,50 +90,6 @@ std::string calculateStatusMessage(const char *operationName, double result) {
 
 std::string selectedActionMessage(const char *menuItem) {
 	return std::string("Selected: ") + menuItem;
-}
-
-void drawLayout() {
-	clear();
-	box(stdscr, 0,0);
-
-	attron(COLOR_PAIR(1));
-	mvprintw(1, 2, "C++ Calculator ncurses");
-	attroff(COLOR_PAIR(1));
-	mvprintw(2, 2, "Use arrows and Enter. Press q to quit.");
-}
-
-void drawMenu(const char *menuItems[], int menuSize, int selected) {
-	for(int i=0; i<menuSize; i++) {
-		if(i==selected) {
-			attron(COLOR_PAIR(2));
-		}
-
-		mvprintw(4 + i, 4, "%s", menuItems[i]);
-
-		if(i == selected) {
-			attroff(COLOR_PAIR(2));
-		}
-	}
-}
-
-void drawStatus(const std::string &statusMessage, bool isError) {
-	if(isError) {
-		attroff(COLOR_PAIR(4));
-	} else {
-		attroff(COLOR_PAIR(3));
-	}
-
-	mvprintw(LINES - 4, 2, "Status: %s", statusMessage.c_str());
-
-
-	if(isError) {
-		attron(COLOR_PAIR(4));
-	} else {
-		attron(COLOR_PAIR(3));
-	}
-
-	mvprintw(LINES - 3, 2, "Screen size: %d x %d", COLS, LINES);
-	mvprintw(LINES - 2, 2, "Press q to quit");
 }
 
 bool isTerminalTooSmall() {
@@ -113,6 +129,15 @@ int main() {
 	init_pair(3, COLOR_GREEN, COLOR_BLACK);
 	init_pair(4, COLOR_RED, COLOR_BLACK);
 
+	if(isTerminalTooSmall()) {
+		clear();
+		mvprintw(1, 2, "Terminal too small");
+		refresh();
+		getch();
+		endwin();
+		return 1;
+	}
+
 	const char *menuItems[] = {
 		"Addition",
 		"Subtraction",
@@ -129,20 +154,19 @@ int main() {
 
 	std::string statusMessage = "Select operation";
 
+	const int contentHeight = LINES - headerHeight - footerHeight;
+	const int contentWidth = COLS - menuWidth;
+
+	WINDOW *headerWindow = newwin(headerHeight, COLS, 0, 0);
+	WINDOW *menuWindow = newwin(contentHeight, menuWidth, headerHeight, 0);
+	WINDOW *contentWindow = newwin(contentHeight, contentWidth, headerHeight, menuWidth);
+	WINDOW *footerWindow = newwin(footerHeight, COLS, LINES - footerHeight, 0);
+
 	while(true) {
-		if(isTerminalTooSmall()) {
-			clear();
-			mvprintw(1, 2, "Terminal too small");
-			refresh();
-			getch();
-			break;
-		}
-
-		drawLayout();
-		drawMenu(menuItems, menuSize, selected);
-		drawStatus(statusMessage, statusIsError);
-
-		refresh();
+		drawHeader(headerWindow);
+		drawMenu(menuWindow, menuItems, menuSize, selected);
+		drawContent(contentWindow, statusMessage, statusIsError);
+		drawFooter(footerWindow);
 
 		key = getch();
 
@@ -187,6 +211,11 @@ int main() {
 			}
 		}
 	}
+
+	delwin(headerWindow);
+	delwin(menuWindow);
+	delwin(contentWindow);
+	delwin(footerWindow);
 
 	endwin();
 
