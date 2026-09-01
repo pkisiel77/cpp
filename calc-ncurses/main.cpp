@@ -2,36 +2,8 @@
 #include <string>
 #include <stdexcept>
 #include "ui.hpp"
-
-double parseNumber(const std::string &text) {
-	return std::stod(text);
-}
-
-double calculate(int selected, double firstNumber, double secondNumber) {
-	switch(selected) {
-		case 0:
-			return firstNumber + secondNumber;
-		case 1:
-			return firstNumber - secondNumber;
-		case 2:
-			return firstNumber * secondNumber;
-		case 3:
-			if(secondNumber == 0) {
-				throw std::runtime_error("Division by zero");
-			}
-			return firstNumber / secondNumber;
-		default:
-			throw std::runtime_error("Unknown operation");
-	}
-}
-
-std::string calculateStatusMessage(const char *operationName, double result) {
-	return std::string(operationName) + " = " + std::to_string(result);
-}
-
-std::string selectedActionMessage(const char *menuItem) {
-	return std::string("Selected: ") + menuItem;
-}
+#include "calculator.hpp"
+#include "app_state.hpp"
 
 std::string readTextInput(const std::string &prompt) {
 	char buffer[100];
@@ -79,12 +51,9 @@ int main() {
 	};
 
 	const int menuSize = 5;
-	int selected = 0;
+
+	AppState state;
 	int key;
-
-	bool statusIsError = false;
-
-	std::string statusMessage = "Select operation";
 
 	const int contentHeight = LINES - headerHeight - footerHeight;
 	const int contentWidth = COLS - menuWidth;
@@ -96,8 +65,8 @@ int main() {
 
 	while(true) {
 		drawHeader(headerWindow);
-		drawMenu(menuWindow, menuItems, menuSize, selected);
-		drawContent(contentWindow, statusMessage, statusIsError);
+		drawMenu(menuWindow, menuItems, menuSize, state.selected);
+		drawContent(contentWindow, state.statusMessage, state.statusIsError);
 		drawFooter(footerWindow);
 
 		key = getch();
@@ -107,23 +76,23 @@ int main() {
 		}
 
 		if(key == KEY_UP) {
-			selected--;
+			state.selected--;
 
-			if(selected < 0) {
-				selected = menuSize - 1;
+			if(state.selected < 0) {
+				state.selected = menuSize - 1;
 			}
 		}
 
 		if(key == KEY_DOWN) {
-			selected++;
+			state.selected++;
 
-			if(selected >= menuSize) {
-				selected = 0;
+			if(state.selected >= menuSize) {
+				state.selected = 0;
 			}
 		}
 
 		if(key == '\n') {
-			if(selected == menuSize - 1) {
+			if(state.selected == menuSize - 1) {
 				break;
 			}
 
@@ -133,13 +102,13 @@ int main() {
 
 				double firstNumber = parseNumber(firstInput);
 				double secondNumber = parseNumber(secondInput);
-				double result = calculate(selected, firstNumber, secondNumber);
+				double result = calculate(state.selected, firstNumber, secondNumber);
 
-				statusMessage = calculateStatusMessage(menuItems[selected], result);
-				statusIsError = false;
+				state.statusMessage = calculateStatusMessage(menuItems[state.selected], result);
+				state.statusIsError = false;
 			} catch (const std::exception &error) {
-				statusMessage = std::string("Error: ") + error.what();
-				statusIsError = true;
+				state.statusMessage = std::string("Error: ") + error.what();
+				state.statusIsError = true;
 			}
 		}
 	}
