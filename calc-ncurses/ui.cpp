@@ -24,7 +24,7 @@ void drawHeader(WINDOW *window) {
 void drawFooter(WINDOW *window) {
 	werase(window);
 	box(window, 0, 0);
-	mvwprintw(window, 1, 2, "Arrows: move | Enter: select | q: quit");
+	mvwprintw(window, 1, 2, "Use arrows to navigate | Enter: select | h: help | q: quit");
 	wrefresh(window);
 }
 
@@ -48,7 +48,7 @@ void drawMenu(WINDOW *window, const char *menuItems[], int menuSize, int selecte
 	wrefresh(window);
 }
 
-void drawContent(WINDOW *window, const std::string &statusMessage, bool isError) {
+void drawContent(WINDOW *window, const std::string &statusMessage, bool isError, int operationsCount) {
 	werase(window);
 	box(window, 0, 0);
 	mvwprintw(window, 1, 2, "Result / Status");
@@ -67,9 +67,32 @@ void drawContent(WINDOW *window, const std::string &statusMessage, bool isError)
 		wattroff(window, COLOR_PAIR(3));
 	}
 
+	mvwprintw(window, 5, 2, "Operations count: %d", operationsCount);
+
 	wrefresh(window);
 }
 
 bool isTerminalTooSmall() {
 	return LINES < 12;
+}
+
+void showHelpScreen() {
+	clear();
+	box(stdscr, 0, 0);
+
+	attron(COLOR_PAIR(1) | A_BOLD);
+	mvprintw(1, 2, "Help");
+	attroff(COLOR_PAIR(1) | A_BOLD);
+
+	mvprintw(3, 2, "Arrow Up / Arrow Down - select operation");
+	mvprintw(4, 2, "Enter - run selected operation");
+	mvprintw(5, 2, "h - show this help screen");
+	mvprintw(6, 2, "q - quit application");
+
+	attron(COLOR_PAIR(3));
+	mvprintw(LINES - 2, 2, "Press any key to return");
+	attroff(COLOR_PAIR(3));
+
+	refresh();
+	getch();
 }

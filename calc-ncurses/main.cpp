@@ -66,13 +66,17 @@ int main() {
 	while(true) {
 		drawHeader(headerWindow);
 		drawMenu(menuWindow, menuItems, menuSize, state.selected);
-		drawContent(contentWindow, state.statusMessage, state.statusIsError);
+		drawContent(contentWindow, state.statusMessage, state.statusIsError, state.operationsCount);
 		drawFooter(footerWindow);
 
 		key = getch();
 
 		if(key == 'q') {
 			break;
+		}
+
+		if(key == 'h') {
+			showHelpScreen();
 		}
 
 		if(key == KEY_UP) {
@@ -106,6 +110,8 @@ int main() {
 
 				state.statusMessage = calculateStatusMessage(menuItems[state.selected], result);
 				state.statusIsError = false;
+				state.operationsCount++;
+
 			} catch (const std::exception &error) {
 				state.statusMessage = std::string("Error: ") + error.what();
 				state.statusIsError = true;

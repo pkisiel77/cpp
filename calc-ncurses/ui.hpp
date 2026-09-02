@@ -13,8 +13,10 @@ void initColors();
 void drawHeader(WINDOW *window);
 void drawFooter(WINDOW *window);
 void drawMenu(WINDOW *window, const char *menuItems[], int menuSize, int selected);
-void drawContent(WINDOW *window, const std::string &statusMessage, bool isError);
+void drawContent(WINDOW *window, const std::string &statusMessage, bool isError, int operationsCount);
 
 bool isTerminalTooSmall();
+
+void showHelpScreen();
 
 #endif
