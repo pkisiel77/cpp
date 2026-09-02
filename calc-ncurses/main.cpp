@@ -66,7 +66,7 @@ int main() {
 	while(true) {
 		drawHeader(headerWindow);
 		drawMenu(menuWindow, menuItems, menuSize, state.selected);
-		drawContent(contentWindow, state.statusMessage, state.statusIsError, state.operationsCount);
+		drawContent(contentWindow, state.statusMessage, state.statusIsError, state.operationsCount, state.history);
 		drawFooter(footerWindow);
 
 		key = getch();
@@ -111,6 +111,7 @@ int main() {
 				state.statusMessage = calculateStatusMessage(menuItems[state.selected], result);
 				state.statusIsError = false;
 				state.operationsCount++;
+				state.history.push_back(state.statusMessage);
 
 			} catch (const std::exception &error) {
 				state.statusMessage = std::string("Error: ") + error.what();

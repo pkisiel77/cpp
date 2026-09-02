@@ -3,6 +3,7 @@
 
 #include <ncurses.h>
 #include <string>
+#include <vector>
 
 extern const int headerHeight;
 extern const int footerHeight;
@@ -13,7 +14,13 @@ void initColors();
 void drawHeader(WINDOW *window);
 void drawFooter(WINDOW *window);
 void drawMenu(WINDOW *window, const char *menuItems[], int menuSize, int selected);
-void drawContent(WINDOW *window, const std::string &statusMessage, bool isError, int operationsCount);
+void drawContent(
+	WINDOW *window,
+	const std::string &statusMessage,
+	bool isError,
+	int operationsCount,
+	const std::vector<std::string> &history
+);
 
 bool isTerminalTooSmall();
 

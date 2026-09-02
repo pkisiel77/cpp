@@ -48,7 +48,13 @@ void drawMenu(WINDOW *window, const char *menuItems[], int menuSize, int selecte
 	wrefresh(window);
 }
 
-void drawContent(WINDOW *window, const std::string &statusMessage, bool isError, int operationsCount) {
+void drawContent(
+	WINDOW *window,
+	const std::string &statusMessage,
+	bool isError,
+	int operationsCount,
+	const std::vector<std::string> &history
+) {
 	werase(window);
 	box(window, 0, 0);
 	mvwprintw(window, 1, 2, "Result / Status");
@@ -68,6 +74,21 @@ void drawContent(WINDOW *window, const std::string &statusMessage, bool isError,
 	}
 
 	mvwprintw(window, 5, 2, "Operations count: %d", operationsCount);
+
+	mvwprintw(window, 7, 2, "History:");
+	int maxRows = getmaxy(window) - 10;
+	int start = 0;
+
+	if(static_cast<int>(history.size()) > maxRows) {
+		start = static_cast<int>(history.size()) - maxRows;
+	}
+
+	int row = 8;
+
+	for(int i = start; i < static_cast<int>(history.size()); i++) {
+		mvwprintw(window, row, 2, "%s", history[i].c_str());
+		row++;
+	}
 
 	wrefresh(window);
 }
