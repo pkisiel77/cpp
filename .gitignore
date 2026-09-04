@@ -9,3 +9,4 @@ cmake-build-*/
 calc/calc
 calc/*history*.txt
 calc-ncurses/calc-ncurses
+calc-ncurses/history.txt

@@ -4,6 +4,7 @@
 #include "ui.hpp"
 #include "calculator.hpp"
 #include "app_state.hpp"
+#include "history.hpp"
 
 std::string readTextInput(const std::string &prompt) {
 	char buffer[100];
@@ -63,6 +64,11 @@ int main() {
 	WINDOW *contentWindow = newwin(contentHeight, contentWidth, headerHeight, menuWidth);
 	WINDOW *footerWindow = newwin(footerHeight, COLS, LINES - footerHeight, 0);
 
+
+	const std::string historyFileName = "history.txt";
+	state.history = loadHistory(historyFileName);
+	state.operationsCount = static_cast<int>(state.history.size());
+
 	while(true) {
 		drawHeader(headerWindow);
 		drawMenu(menuWindow, menuItems, menuSize, state.selected);
@@ -85,6 +91,7 @@ int main() {
 
 		if(key == 'c') {
 			clearHistory(state);
+			saveHistory(historyFileName, state.history);
 		}
 
 		if(key == 'h') {
@@ -126,6 +133,7 @@ int main() {
 				state.history.push_back(state.statusMessage);
 				state.lastResult = result;
 				state.hasLastResult = true;
+				saveHistory(historyFileName, state.history);
 
 			} catch (const std::exception &error) {
 				state.statusMessage = std::string("Error: ") + error.what();
