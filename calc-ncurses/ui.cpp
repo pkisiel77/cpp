@@ -24,7 +24,7 @@ void drawHeader(WINDOW *window) {
 void drawFooter(WINDOW *window) {
 	werase(window);
 	box(window, 0, 0);
-	mvwprintw(window, 1, 2, "Use arrows to navigate | Enter: select | h: help | q: quit");
+	mvwprintw(window, 1, 2, "Arrows navigate | Enter select | h help | c clear | q quit");
 	wrefresh(window);
 }
 
@@ -53,7 +53,9 @@ void drawContent(
 	const std::string &statusMessage,
 	bool isError,
 	int operationsCount,
-	const std::vector<std::string> &history
+	const std::vector<std::string> &history,
+	bool hasLastResult,
+	double lastResult
 ) {
 	werase(window);
 	box(window, 0, 0);
@@ -75,15 +77,21 @@ void drawContent(
 
 	mvwprintw(window, 5, 2, "Operations count: %d", operationsCount);
 
-	mvwprintw(window, 7, 2, "History:");
-	int maxRows = getmaxy(window) - 10;
+	if(hasLastResult) {
+		mvwprintw(window, 6, 2, "Last result: %.2f", lastResult);
+	} else {
+		mvwprintw(window, 6, 2, "Last result: none");
+	}
+
+	mvwprintw(window, 8, 2, "History:");
+	int maxRows = getmaxy(window) - 11;
 	int start = 0;
 
 	if(static_cast<int>(history.size()) > maxRows) {
 		start = static_cast<int>(history.size()) - maxRows;
 	}
 
-	int row = 8;
+	int row = 9;
 
 	for(int i = start; i < static_cast<int>(history.size()); i++) {
 		mvwprintw(window, row, 2, "%s", history[i].c_str());
@@ -108,7 +116,8 @@ void showHelpScreen() {
 	mvprintw(3, 2, "Arrow Up / Arrow Down - select operation");
 	mvprintw(4, 2, "Enter - run selected operation");
 	mvprintw(5, 2, "h - show this help screen");
-	mvprintw(6, 2, "q - quit application");
+	mvprintw(6, 2, "c - clear history and reset state");
+	mvprintw(7, 2, "q - quit application");
 
 	attron(COLOR_PAIR(3));
 	mvprintw(LINES - 2, 2, "Press any key to return");

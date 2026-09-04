@@ -10,6 +10,10 @@ struct AppState {
 	bool statusIsError = false;
 	int operationsCount = 0;
 	std::vector<std::string> history;
+	double lastResult = 0;
+	bool hasLastResult = false;
 };
+
+void clearHistory(AppState &state);
 
 #endif

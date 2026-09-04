@@ -19,7 +19,9 @@ void drawContent(
 	const std::string &statusMessage,
 	bool isError,
 	int operationsCount,
-	const std::vector<std::string> &history
+	const std::vector<std::string> &history,
+	bool hasLastResult,
+	double lastResult
 );
 
 bool isTerminalTooSmall();

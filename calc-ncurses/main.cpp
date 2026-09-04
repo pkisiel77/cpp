@@ -66,13 +66,25 @@ int main() {
 	while(true) {
 		drawHeader(headerWindow);
 		drawMenu(menuWindow, menuItems, menuSize, state.selected);
-		drawContent(contentWindow, state.statusMessage, state.statusIsError, state.operationsCount, state.history);
+		drawContent(
+			contentWindow,
+			state.statusMessage,
+			state.statusIsError,
+			state.operationsCount,
+			state.history,
+			state.hasLastResult,
+			state.lastResult
+		);
 		drawFooter(footerWindow);
 
 		key = getch();
 
 		if(key == 'q') {
 			break;
+		}
+
+		if(key == 'c') {
+			clearHistory(state);
 		}
 
 		if(key == 'h') {
@@ -112,6 +124,8 @@ int main() {
 				state.statusIsError = false;
 				state.operationsCount++;
 				state.history.push_back(state.statusMessage);
+				state.lastResult = result;
+				state.hasLastResult = true;
 
 			} catch (const std::exception &error) {
 				state.statusMessage = std::string("Error: ") + error.what();
