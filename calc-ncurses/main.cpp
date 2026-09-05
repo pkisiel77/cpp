@@ -90,8 +90,18 @@ int main() {
 		}
 
 		if(key == 'c') {
-			clearHistory(state);
-			saveHistory(historyFileName, state.history);
+			bool confirmed = confirmDialog(
+				"Clear history",
+				"Do you really want to clear history?"
+			);
+
+			if(confirmed) {
+				clearHistory(state);
+				saveHistory(historyFileName, state.history);
+			} else {
+				state.statusMessage = "Clear history cancelled";
+				state.statusIsError = false;
+			}
 		}
 
 		if(key == 'h') {

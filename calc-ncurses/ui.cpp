@@ -116,7 +116,7 @@ void showHelpScreen() {
 	mvprintw(3, 2, "Arrow Up / Arrow Down - select operation");
 	mvprintw(4, 2, "Enter - run selected operation");
 	mvprintw(5, 2, "h - show this help screen");
-	mvprintw(6, 2, "c - clear history and reset state");
+	mvprintw(6, 2, "c - clear history with confirmation and reset state");
 	mvprintw(7, 2, "q - quit application");
 
 	attron(COLOR_PAIR(3));
@@ -125,4 +125,32 @@ void showHelpScreen() {
 
 	refresh();
 	getch();
+}
+
+bool confirmDialog(const std::string &title, const std::string &message) {
+	const int height = 7;
+	const int width = 50;
+	const int startY = (LINES - height) / 2;
+	const int startX = (COLS - width) / 2;
+
+	WINDOW *dialogWindow = newwin(height, width, startY, startX);
+	keypad(dialogWindow, TRUE);
+
+	werase(dialogWindow);
+	box(dialogWindow, 0, 0);
+
+	wattron(dialogWindow, COLOR_PAIR(1) | A_BOLD);
+	mvwprintw(dialogWindow, 1, 2, "%s", title.c_str());
+	wattroff(dialogWindow, COLOR_PAIR(1) | A_BOLD);
+
+	mvwprintw(dialogWindow, 3, 2, "%s", message.c_str());
+	mvwprintw(dialogWindow, 5, 2, "Press y to confirm, n to cancel");
+
+	wrefresh(dialogWindow);
+
+	int key = wgetch(dialogWindow);
+
+	delwin(dialogWindow);
+
+	return key == 'y' || key == 'Y';
 }

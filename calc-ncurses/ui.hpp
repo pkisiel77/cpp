@@ -25,7 +25,7 @@ void drawContent(
 );
 
 bool isTerminalTooSmall();
-
 void showHelpScreen();
+bool confirmDialog(const std::string &title, const std::string &message);
 
 #endif
