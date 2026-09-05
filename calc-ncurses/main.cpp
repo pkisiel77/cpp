@@ -108,6 +108,10 @@ int main() {
 			showHelpScreen();
 		}
 
+		if(key == 'a') {
+			showAboutDialog();
+		}
+
 		if(key == KEY_UP) {
 			state.selected--;
 

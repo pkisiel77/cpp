@@ -24,7 +24,7 @@ void drawHeader(WINDOW *window) {
 void drawFooter(WINDOW *window) {
 	werase(window);
 	box(window, 0, 0);
-	mvwprintw(window, 1, 2, "Arrows navigate | Enter select | h help | c clear | q quit");
+	mvwprintw(window, 1, 2, "Arrows navigate | Enter select | h help | a about | c clear | q quit");
 	wrefresh(window);
 }
 
@@ -117,7 +117,8 @@ void showHelpScreen() {
 	mvprintw(4, 2, "Enter - run selected operation");
 	mvprintw(5, 2, "h - show this help screen");
 	mvprintw(6, 2, "c - clear history with confirmation and reset state");
-	mvprintw(7, 2, "q - quit application");
+	mvprintw(7, 2, "a - show about window");
+	mvprintw(8, 2, "q - quit application");
 
 	attron(COLOR_PAIR(3));
 	mvprintw(LINES - 2, 2, "Press any key to return");
@@ -153,4 +154,34 @@ bool confirmDialog(const std::string &title, const std::string &message) {
 	delwin(dialogWindow);
 
 	return key == 'y' || key == 'Y';
+}
+
+void showAboutDialog() {
+	const int height = 9;
+	const int width = 52;
+	const int startY = (LINES - height) / 2;
+	const int startX = (COLS - width) / 2;
+
+	WINDOW *aboutWindow = newwin(height, width, startY, startX);
+	keypad(aboutWindow, TRUE);
+
+	werase(aboutWindow);
+	box(aboutWindow, 0, 0);
+
+	wattron(aboutWindow, COLOR_PAIR(1) | A_BOLD);
+	mvwprintw(aboutWindow, 1, 2, "Calc Ncurses");
+	wattroff(aboutWindow, COLOR_PAIR(1) | A_BOLD);
+
+	mvwprintw(aboutWindow, 3, 2, "Version: 0.1");
+	mvwprintw(aboutWindow, 4, 2, "Terminal calculator built with C++20");
+	mvwprintw(aboutWindow, 5, 2, "UI library: ncurses");
+
+	wattron(aboutWindow, COLOR_PAIR(3));
+	mvwprintw(aboutWindow, 7, 2, "Press any key to close");
+	wattroff(aboutWindow, COLOR_PAIR(3));
+
+	wrefresh(aboutWindow);
+	wgetch(aboutWindow);
+
+	delwin(aboutWindow);
 }
