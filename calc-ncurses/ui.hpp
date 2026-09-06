@@ -9,6 +9,14 @@ extern const int headerHeight;
 extern const int footerHeight;
 extern const int menuWidth;
 
+enum class FooterAction {
+	None,
+	Help,
+	About,
+	Clear,
+	Quit
+};
+
 void initColors();
 
 void drawHeader(WINDOW *window);
@@ -28,5 +36,9 @@ bool isTerminalTooSmall();
 void showHelpScreen();
 bool confirmDialog(const std::string &title, const std::string &message);
 void showAboutDialog();
+
+FooterAction getFooterAction(int mouseX, int mouseY);
+void drawButton(WINDOW *window, int x, const char *label);
+bool isInsideButton(int mouseX, int buttonX, int buttonWidth);
 
 #endif

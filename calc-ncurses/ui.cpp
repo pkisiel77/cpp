@@ -25,11 +25,28 @@ void drawHeader(WINDOW *window) {
 	wrefresh(window);
 }
 
+void drawButton(WINDOW *window, int x, const char *label) {
+	wattron(window, COLOR_PAIR(2) | A_BOLD);
+	mvwprintw(window, 1, x, "[%s]", label);
+	wattroff(window, COLOR_PAIR(2) | A_BOLD);
+}
+
+bool isInsideButton(int mouseX, int buttonX, int buttonWidth) {
+	return mouseX >= buttonX && mouseX < buttonX + buttonWidth;
+}
+
 void drawFooter(WINDOW *window) {
 	wbkgd(window, COLOR_PAIR(5));
 	werase(window);
 	box(window, 0, 0);
-	mvwprintw(window, 1, 2, "Arrows/Mouse navigate | Enter select | h help | a about | c clear | q quit");
+
+	drawButton(window, 2, "Help");
+
+	drawButton(window, 10, "About");
+	drawButton(window, 20, "Clear");
+	drawButton(window, 30, "Quit");
+	// mvwprintw(window, 1, 2, "Arrows/Mouse navigate | Enter select | h help | a about | c clear | q quit");
+
 	wrefresh(window);
 }
 
@@ -109,7 +126,7 @@ void drawContent(
 }
 
 bool isTerminalTooSmall() {
-	return LINES < 12;
+	return LINES < 12 || COLS < 40;
 }
 
 void showHelpScreen() {
@@ -200,4 +217,30 @@ void showAboutDialog() {
 	delwin(aboutWindow);
 	touchwin(stdscr);
 	refresh();
+}
+
+FooterAction getFooterAction(int mouseX, int mouseY) {
+	int footerRow = LINES - footerHeight + 1;
+
+	if(mouseY != footerRow) {
+		return FooterAction::None;
+	}
+
+	if(isInsideButton(mouseX, 2, 6)) {
+		return FooterAction::Help;
+	}
+
+	if(isInsideButton(mouseX, 10, 7)) {
+		return FooterAction::About;
+	}
+
+	if(isInsideButton(mouseX, 20, 7)) {
+		return FooterAction::Clear;
+	}
+
+	if(isInsideButton(mouseX, 30, 6)) {
+		return FooterAction::Quit;
+	}
+
+	return FooterAction::None;
 }

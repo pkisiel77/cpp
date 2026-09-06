@@ -24,19 +24,56 @@ std::string readTextInput(const std::string &prompt) {
 	return std::string(buffer);
 }
 
+bool handleFooterAction(
+		FooterAction action,
+		AppState &state,
+		const std::string &historyFileName
+		) {
+	switch(action) {
+		case FooterAction::Help:
+			showHelpScreen();
+			break;
+
+		case FooterAction::About:
+			showAboutDialog();
+			break;
+
+		case FooterAction::Clear:
+			if(confirmDialog(
+					"Clear history",
+					"Do you really want to clear history?"
+					)) {
+				clearHistory(state);
+				saveHistory(historyFileName, state.history);
+			} else {
+				state.statusMessage = "Clear history cancelled";
+				state.statusIsError = false;
+			}
+			break;
+
+		case FooterAction::Quit:
+			return true;
+
+		case FooterAction::None:
+			break;
+	}
+
+	return false;
+}
 
 int main() {
 	initscr();
 	noecho();
 	cbreak();
 	keypad(stdscr, TRUE);
-	mousemask(BUTTON1_CLICKED | BUTTON1_PRESSED, nullptr);
-	mouseinterval(0);
+	mousemask(BUTTON1_CLICKED, nullptr);
+	mouseinterval(200);
 	curs_set(0);
-	clear();
-	refresh();
 
 	initColors();
+
+	clear();
+	refresh();
 
 	if(isTerminalTooSmall()) {
 		clear();
@@ -93,6 +130,22 @@ int main() {
 			MEVENT event;
 
 			if(getmouse(&event) == OK) {
+				bool isLeftClick = event.bstate & BUTTON1_CLICKED;
+
+				FooterAction footerAction = getFooterAction(event.x, event.y);
+
+				if(isLeftClick && footerAction != FooterAction::None) {
+					if(handleFooterAction(
+								footerAction,
+								state,
+								historyFileName
+							     )) {
+						break;
+					}
+
+					continue;
+				}
+
 				int clickedIndex = event.y - headerHeight - 3;
 
 				bool isInsideMenu =
@@ -100,7 +153,7 @@ int main() {
 					event.x < menuWidth &&
 					clickedIndex >= 0 &&
 					clickedIndex < menuSize &&
-					(event.bstate & (BUTTON1_CLICKED | BUTTON1_PRESSED));
+					(event.bstate & BUTTON1_CLICKED);
 
 				if(isInsideMenu) {
 					state.selected = clickedIndex;
@@ -110,6 +163,8 @@ int main() {
 					if(state.selected == menuSize - 1) {
 						break;
 					}
+
+					key = '\n';
 				}
 			}
 		}
@@ -119,6 +174,7 @@ int main() {
 		}
 
 		if(key == 'c') {
+			/*
 			bool confirmed = confirmDialog(
 				"Clear history",
 				"Do you really want to clear history?"
@@ -131,14 +187,30 @@ int main() {
 				state.statusMessage = "Clear history cancelled";
 				state.statusIsError = false;
 			}
+			*/
+			handleFooterAction(
+					FooterAction::Clear,
+					state,
+					historyFileName
+					);
 		}
 
 		if(key == 'h') {
-			showHelpScreen();
+			handleFooterAction(
+					FooterAction::Help,
+					state,
+					historyFileName
+					);
+			// showHelpScreen();
 		}
 
 		if(key == 'a') {
-			showAboutDialog();
+			handleFooterAction(
+					FooterAction::About,
+					state,
+					historyFileName
+					);
+			// showAboutDialog();
 		}
 
 		if(key == KEY_UP) {
