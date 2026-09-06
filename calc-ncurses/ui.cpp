@@ -12,9 +12,13 @@ void initColors() {
 	init_pair(2, COLOR_BLACK, COLOR_CYAN);
 	init_pair(3, COLOR_GREEN, COLOR_BLACK);
 	init_pair(4, COLOR_RED, COLOR_BLACK);
+	init_pair(5, COLOR_WHITE, COLOR_BLACK);
+
+	bkgd(COLOR_PAIR(5));
 }
 
 void drawHeader(WINDOW *window) {
+	wbkgd(window, COLOR_PAIR(5));
 	werase(window);
 	box(window, 0, 0);
 	mvwprintw(window, 1, 2, "C++ Calculator ncurses");
@@ -22,13 +26,15 @@ void drawHeader(WINDOW *window) {
 }
 
 void drawFooter(WINDOW *window) {
+	wbkgd(window, COLOR_PAIR(5));
 	werase(window);
 	box(window, 0, 0);
-	mvwprintw(window, 1, 2, "Arrows navigate | Enter select | h help | a about | c clear | q quit");
+	mvwprintw(window, 1, 2, "Arrows/Mouse navigate | Enter select | h help | a about | c clear | q quit");
 	wrefresh(window);
 }
 
 void drawMenu(WINDOW *window, const char *menuItems[], int menuSize, int selected) {
+	wbkgd(window, COLOR_PAIR(5));
 	werase(window);
 	box(window, 0, 0);
 	mvwprintw(window, 1, 2, "Menu");
@@ -57,6 +63,7 @@ void drawContent(
 	bool hasLastResult,
 	double lastResult
 ) {
+	wbkgd(window, COLOR_PAIR(5));
 	werase(window);
 	box(window, 0, 0);
 	mvwprintw(window, 1, 2, "Result / Status");
@@ -113,12 +120,15 @@ void showHelpScreen() {
 	mvprintw(1, 2, "Help");
 	attroff(COLOR_PAIR(1) | A_BOLD);
 
-	mvprintw(3, 2, "Arrow Up / Arrow Down - select operation");
-	mvprintw(4, 2, "Enter - run selected operation");
-	mvprintw(5, 2, "h - show this help screen");
-	mvprintw(6, 2, "c - clear history with confirmation and reset state");
-	mvprintw(7, 2, "a - show about window");
-	mvprintw(8, 2, "q - quit application");
+	int row = 3;
+	int col = 2;
+	mvprintw(row++, col, "Arrow Up / Arrow Down - select operation");
+	mvprintw(row++, col, "Mouse click - select menu item");
+	mvprintw(row++, col, "Enter - run selected operation");
+	mvprintw(row++, col, "h - show this help screen");
+	mvprintw(row++, col, "c - clear history with confirmation and reset state");
+	mvprintw(row++, col, "a - show about window");
+	mvprintw(row  , col, "q - quit application");
 
 	attron(COLOR_PAIR(3));
 	mvprintw(LINES - 2, 2, "Press any key to return");
@@ -126,6 +136,8 @@ void showHelpScreen() {
 
 	refresh();
 	getch();
+	clear();
+	refresh();
 }
 
 bool confirmDialog(const std::string &title, const std::string &message) {
@@ -152,6 +164,8 @@ bool confirmDialog(const std::string &title, const std::string &message) {
 	int key = wgetch(dialogWindow);
 
 	delwin(dialogWindow);
+	touchwin(stdscr);
+	refresh();
 
 	return key == 'y' || key == 'Y';
 }
@@ -184,4 +198,6 @@ void showAboutDialog() {
 	wgetch(aboutWindow);
 
 	delwin(aboutWindow);
+	touchwin(stdscr);
+	refresh();
 }

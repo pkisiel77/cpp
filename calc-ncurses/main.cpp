@@ -30,7 +30,11 @@ int main() {
 	noecho();
 	cbreak();
 	keypad(stdscr, TRUE);
+	mousemask(BUTTON1_CLICKED | BUTTON1_PRESSED, nullptr);
+	mouseinterval(0);
 	curs_set(0);
+	clear();
+	refresh();
 
 	initColors();
 
@@ -84,6 +88,31 @@ int main() {
 		drawFooter(footerWindow);
 
 		key = getch();
+
+		if(key == KEY_MOUSE) {
+			MEVENT event;
+
+			if(getmouse(&event) == OK) {
+				int clickedIndex = event.y - headerHeight - 3;
+
+				bool isInsideMenu =
+					event.x >= 0 &&
+					event.x < menuWidth &&
+					clickedIndex >= 0 &&
+					clickedIndex < menuSize &&
+					(event.bstate & (BUTTON1_CLICKED | BUTTON1_PRESSED));
+
+				if(isInsideMenu) {
+					state.selected = clickedIndex;
+					state.statusMessage = std::string("Selected: ") + menuItems[state.selected];
+					state.statusIsError = false;
+
+					if(state.selected == menuSize - 1) {
+						break;
+					}
+				}
+			}
+		}
 
 		if(key == 'q') {
 			break;
