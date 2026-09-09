@@ -97,6 +97,7 @@ int main() {
 	AppState state;
 	int key;
 
+	/*
 	const int contentHeight = LINES - headerHeight - footerHeight;
 	const int contentWidth = COLS - menuWidth;
 
@@ -104,17 +105,52 @@ int main() {
 	WINDOW *menuWindow = newwin(contentHeight, menuWidth, headerHeight, 0);
 	WINDOW *contentWindow = newwin(contentHeight, contentWidth, headerHeight, menuWidth);
 	WINDOW *footerWindow = newwin(footerHeight, COLS, LINES - footerHeight, 0);
+	*/
 
+	AppWindows windows;
+
+	if(!isTerminalTooSmall()) {
+		windows = createWindows();
+	}
 
 	const std::string historyFileName = "history.txt";
 	state.history = loadHistory(historyFileName);
 	state.operationsCount = static_cast<int>(state.history.size());
 
 	while(true) {
-		drawHeader(headerWindow);
-		drawMenu(menuWindow, menuItems, menuSize, state.selected);
+		if(isTerminalTooSmall()) {
+			destroyWindows(windows);
+
+			clear();
+			mvprintw(
+				LINES / 2,
+				2,
+				"Terminal too small - resize or press q"
+				);
+			refresh();
+
+			key = getch();
+
+			if(key == 'q') {
+				break;
+			}
+
+			continue;
+		}
+
+		if(windows.header == nullptr) {
+			windows = createWindows();
+			redrawWindows(windows);
+		}
+
+		drawHeader(windows.header);
+		drawMenu(windows.menu,
+			menuItems,
+			menuSize,
+			state.selected
+			);
 		drawContent(
-			contentWindow,
+			windows.content,
 			state.statusMessage,
 			state.statusIsError,
 			state.operationsCount,
@@ -122,7 +158,7 @@ int main() {
 			state.hasLastResult,
 			state.lastResult
 		);
-		drawFooter(footerWindow);
+		drawFooter(windows.footer);
 
 		key = getch();
 
@@ -229,6 +265,26 @@ int main() {
 			}
 		}
 
+		if(key == KEY_RESIZE) {
+			destroyWindows(windows);
+
+			if(isTerminalTooSmall()) {
+				clear();
+				mvprintw(
+					LINES / 2,
+					2,
+					"Terminal too small - resize or press q"
+					);
+				refresh();
+				continue;
+			}
+
+			windows = createWindows();
+			clear();
+			refresh();
+			continue;
+		}
+
 		if(key == '\n') {
 			if(state.selected == menuSize - 1) {
 				break;
@@ -257,10 +313,14 @@ int main() {
 		}
 	}
 
+	/*
 	delwin(headerWindow);
 	delwin(menuWindow);
 	delwin(contentWindow);
 	delwin(footerWindow);
+	*/
+
+	destroyWindows(windows);
 
 	endwin();
 

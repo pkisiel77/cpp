@@ -4,6 +4,93 @@ const int headerHeight = 3;
 const int footerHeight = 3;
 const int menuWidth = 24;
 
+AppWindows createWindows() {
+	const int contentHeight = LINES - headerHeight - footerHeight;
+
+	const int contentWidth = COLS - menuWidth;
+
+	AppWindows windows;
+
+	windows.header = newwin(
+			headerHeight,
+			COLS,
+			0,
+			0
+			);
+
+	windows.menu = newwin(
+			contentHeight,
+			menuWidth,
+			headerHeight,
+			0
+			);
+
+	windows.content = newwin(
+			contentHeight,
+			contentWidth,
+			headerHeight,
+			menuWidth
+			);
+
+	windows.footer = newwin(
+			footerHeight,
+			COLS,
+			LINES - footerHeight,
+			0
+			);
+
+	return windows;
+}
+
+void destroyWindows(AppWindows &windows) {
+	if(windows.header != nullptr) {
+		delwin(windows.header);
+		windows.header = nullptr;
+	}
+
+	if(windows.menu != nullptr) {
+		delwin(windows.menu);
+		windows.menu = nullptr;
+	}
+
+	if(windows.content != nullptr) {
+		delwin(windows.content);
+		windows.content = nullptr;
+	}
+
+	if(windows.footer != nullptr) {
+		delwin(windows.footer);
+		windows.footer = nullptr;
+	}
+}
+
+void redrawWindows(AppWindows &windows) {
+	clear();
+	refresh();
+
+	if(windows.header != nullptr) {
+		touchwin(windows.header);
+		wrefresh(windows.header);
+	}
+
+
+	if(windows.menu != nullptr) {
+		touchwin(windows.menu);
+		wrefresh(windows.menu);
+	}
+
+	if(windows.content != nullptr) {
+		touchwin(windows.content);
+		wrefresh(windows.content);
+	}
+
+
+	if(windows.footer != nullptr) {
+		touchwin(windows.footer);
+		wrefresh(windows.footer);
+	}
+
+}
 
 void initColors() {
 	start_color();
@@ -126,7 +213,7 @@ void drawContent(
 }
 
 bool isTerminalTooSmall() {
-	return LINES < 12 || COLS < 40;
+	return LINES < 12 || COLS < 60;
 }
 
 void showHelpScreen() {

@@ -17,6 +17,17 @@ enum class FooterAction {
 	Quit
 };
 
+struct AppWindows{
+	WINDOW *header = nullptr;
+	WINDOW *menu = nullptr;
+	WINDOW *content = nullptr;
+	WINDOW *footer = nullptr;
+};
+
+AppWindows createWindows();
+void destroyWindows(AppWindows &windows);
+void redrawWindows(AppWindows &windows);
+
 void initColors();
 
 void drawHeader(WINDOW *window);
